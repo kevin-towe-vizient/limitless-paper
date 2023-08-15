@@ -1,0 +1,36 @@
+# Use an official Node.js runtime as the base image
+FROM node:18
+# So a quick thought over the node version. Should we publish 3 sets of this image, with node 12, 14, 16
+# OR... use this as a place to ensure consistency across the organization build processes.  
+
+# Set environment variables as needed
+
+# Install Angular CLI globally
+RUN npm install --global @angular/cli
+## what do we think is a better practrice? call the cli versioned from the environment(we as the image creator get to set the version in that case),
+## or require the apps to reference the cli from their node_modules/bin directory. idk idk 
+
+# Optional: Set up caching for node_modules.
+# This can improve build time if you're building often.
+# First, COPY the package.json and package-lock.json
+# then run `npm install`, and finally COPY your app's source.
+# This takes advantage of Docker's layer caching.
+
+# # WORKDIR can be set to the directory where you'd run npm or ng commands.
+# WORKDIR /app
+
+# Where to download and install the agent
+WORKDIR /ado-agent
+
+# Download and extract the agent tarball
+RUN curl -Ls https://vstsagentpackage.azureedge.net/agent/{version}/vsts-agent-linux-x64-{version}.tar.gz | tar -xz
+# I have no idea what this url points to.
+
+# Copy over the Azure DevOps agent's binaries, scriptrs or other dependencies.
+# COPY some-script.sh /some-dirrrr/
+
+# Expose any ports your apps might use
+# EXPOSE 4200
+
+# If needed, set a default command
+# CMD ["npm", "start"]
